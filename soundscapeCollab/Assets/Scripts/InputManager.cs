@@ -71,13 +71,13 @@ public class InputManager : MonoBehaviour
         }
 
         // secondary controller
-        // check for user input: secondary trigger down
+        // check for user input: secondary trigger down on left grabber.
         if (OVRInput.GetDown(OVRInput.RawButton.LHandTrigger, OVRInput.Controller.Touch))
         {
             leftGrabber.userGrab = true;
         }
 
-        // check for user input: secondary trigger down
+        // check for user input: secondary trigger down on right grabber
         if (OVRInput.GetDown(OVRInput.RawButton.RHandTrigger, OVRInput.Controller.Touch))
         {
             rightGrabber.userGrab = true;

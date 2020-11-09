@@ -8,6 +8,7 @@ public class ControllerGrabber : MonoBehaviour
     private bool _intersectingObject;
 
     public bool userGrab;
+    private bool play = true;
     private GameObject grabbedObject;
 
     public Material canGrabMaterial;
@@ -75,6 +76,11 @@ public class ControllerGrabber : MonoBehaviour
                     Vector3 offset = grabbedObject.GetComponent<Collider>().bounds.size;
                     grabbedObject.transform.position = newPosition + new Vector3(0f, (offset.y / 2f), 0f); // move it to the ground
                     grabbedObject.transform.rotation = Quaternion.identity; // set it upright
+                    if (play)
+                    {
+                        grabbedObject.GetComponent<AudioSource>().Play(); // Play the object's audioSource.
+                    }
+                    play = false; // limit play souond to only one time
                 }
             }
         }
@@ -89,6 +95,7 @@ public class ControllerGrabber : MonoBehaviour
             other.gameObject.GetComponent<Renderer>().material = _savedMaterial;
             _intersectingObject = false;
             grabbedObject = null;
+            play = true;
         }
 
     }
