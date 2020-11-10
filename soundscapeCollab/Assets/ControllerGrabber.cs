@@ -12,6 +12,7 @@ public class ControllerGrabber : MonoBehaviour
     private GameObject grabbedObject;
 
     public Material canGrabMaterial;
+    private float range = 500f;
     public float snapDistance = 0.5f;
     private Material _savedMaterial;
 
@@ -63,24 +64,28 @@ public class ControllerGrabber : MonoBehaviour
 
         if (_intersectingObject)
         {
+
             // send a short raycast from grabbed object downwards
             Ray ray = new Ray(grabbedObject.transform.position, -grabbedObject.transform.up);
             RaycastHit hit;
-            // if it hits ground: Grabbed object is within snap distance of the ground
-            if (Physics.Raycast(ray, out hit, snapDistance))
+
+            // if it hits ground and Grabbed object is within snap distance of the ground
+            if (Physics.Raycast(ray, out hit, range))
             {
-                if (hit.collider.tag == "ground" && !userGrab)
+                // get the lowest point
+                Vector3 lowestPoint = grabbedObject.GetComponent<Collider>().ClosestPoint(hit.point);
+                if (hit.collider.tag == "ground" && !userGrab && (lowestPoint.y-hit.point.y) < snapDistance)
                 {
                     grabbedObject.transform.parent = null; // unparent it from the grabbers.
                     Vector3 newPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-                    Vector3 offset = grabbedObject.GetComponent<Collider>().bounds.size;
-                    grabbedObject.transform.position = newPosition + new Vector3(0f, (offset.y / 2f), 0f); // move it to the ground
+                    Vector3 dimensions = grabbedObject.GetComponent<Collider>().bounds.size;
+                    grabbedObject.transform.position = newPosition + new Vector3(0f, (dimensions.y / 2f), 0f); // move it to the ground
                     grabbedObject.transform.rotation = Quaternion.identity; // set it upright
                     if (play)
                     {
                         grabbedObject.GetComponent<AudioSource>().Play(); // Play the object's audioSource.
                     }
-                    play = false; // limit play souond to only one time
+                    play = false; // limit play sound to only one time
                 }
             }
         }
